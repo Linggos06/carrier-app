@@ -15,12 +15,12 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.json());
-app.use("/", router);
+app.use("/api", router);
 
  app.use(express.static(path.join(__dirname, 'build')));
 
 
-app.get('/*', (req, res) => {
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
  });
 
@@ -53,7 +53,7 @@ carrierSchema.plugin(AutoIncrement, {
 const Carrier = mongoose.model("Carrier", carrierSchema);
 
 
-router.route("/create").post((req, res) => {
+router.route("/api/create").post((req, res) => {
 
     const name = _.upperCase(req.body.name);
     const origin = _.upperCase(req.body.origin);
@@ -83,7 +83,7 @@ router.route("/create").post((req, res) => {
 });
 
 
-router.route("/find").get((req, res) => {
+router.route("/api/find").get((req, res) => {
 
     const input = _.upperCase(req.query.q);
 
@@ -107,5 +107,5 @@ router.route("/find").get((req, res) => {
 
 let port = process.env.PORT || 3001;
 app.listen(port, function () {
-    console.log("App is running on port 3001")
+    console.log(`App is running on port ${port}`)
 });
