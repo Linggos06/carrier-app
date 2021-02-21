@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const router = express.Router();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -15,14 +14,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.json());
-app.use("/api", router);
 
- app.use(express.static(path.join(__dirname, 'build')));
-
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
- });
 
 const uri = process.env.MONGODB_URI;
 mongoose.connect(uri || 'mongodb+srv://admin-julia:211186@cluster0.khhav.mongodb.net/carriersDB', {
@@ -53,7 +45,7 @@ carrierSchema.plugin(AutoIncrement, {
 const Carrier = mongoose.model("Carrier", carrierSchema);
 
 
-router.route("/api/create").post((req, res) => {
+app.route("/api/create").post((req, res) => {
 
     const name = _.upperCase(req.body.name);
     const origin = _.upperCase(req.body.origin);
@@ -83,7 +75,7 @@ router.route("/api/create").post((req, res) => {
 });
 
 
-router.route("/api/find").get((req, res) => {
+app.route("/api/find").get((req, res) => {
 
     const input = _.upperCase(req.query.q);
 
@@ -105,7 +97,19 @@ router.route("/api/find").get((req, res) => {
 })
 
 
+
+if (process.env.NODE_ENV === 'production') {
+    // Serve any static files
+    app.use(express.static(path.join(__dirname, 'build')));
+  // Handle React routing, return all requests to React app
+    app.get('*', function(req, res) {
+      res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    });
+  }
+
 let port = process.env.PORT || 3001;
 app.listen(port, function () {
     console.log(`App is running on port ${port}`)
 });
+
+
