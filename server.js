@@ -93,10 +93,10 @@ router.route("/find").get((req, res) => {
             }
         }).then(foundCarrier => {
 
-            foundCarrier.forEach(item => {
-                item.name = _.capitalize(item.name);
-                item.origin = _.capitalize(item.origin);
-            })
+            // foundCarrier.forEach(item => {
+            //     item.name = _.capitalize(item.name);
+            //     item.origin = _.capitalize(item.origin);
+            // })
             res.send(foundCarrier);
         })
         .catch(err => {
